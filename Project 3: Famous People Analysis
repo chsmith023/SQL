@@ -1,0 +1,74 @@
+CREATE TABLE singers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    fullname TEXT,
+    age INTEGER,
+    birthplace_id INTEGER);
+    
+INSERT INTO singers (fullname, age, birthplace_id) VALUES ("Harry Styles", 30, 1);
+INSERT INTO singers (fullname, age, birthplace_id) VALUES ("Taylor Swift", 34, 2);
+INSERT INTO singers (fullname, age, birthplace_id) VALUES ("Adele", 35, 1);
+INSERT INTO singers (fullname, age, birthplace_id) VALUES ("Rihanna", 35, 3); 
+INSERT INTO singers (fullname, age, birthplace_id) VALUES ("Lana Del Ray", 38, 2);
+
+CREATE TABLE birthplaces (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    place_name TEXT);
+    
+INSERT INTO birthplaces (place_name) VALUES ("England");
+INSERT INTO birthplaces (place_name) VALUES ("USA");
+INSERT INTO birthplaces (place_name) VALUES ("Barbados");
+
+CREATE TABLE awards (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    singer_id INTEGER,
+    awards_won INTEGER);
+
+INSERT INTO awards (singer_id, awards_won) VALUES (1, 3);
+INSERT INTO awards (singer_id, awards_won) VALUES (2, 14);
+INSERT INTO awards (singer_id, awards_won) VALUES (3, 16);
+INSERT INTO awards (singer_id, awards_won) VALUES (4, 9);
+
+CREATE TABLE exes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ex_1 INTEGER,
+    ex_2 INTEGER);
+
+INSERT INTO exes (ex_1, ex_2) VALUES (1, 2);
+
+-- Show list of singers name, age, and where they were born from youngest to oldest
+SELECT singers.fullname, singers.age, birthplaces.place_name 
+    FROM singers
+    JOIN birthplaces
+    ON singers.birthplace_id = birthplaces.id
+    ORDER BY singers.age;
+    
+-- Only show singers names who were born in England
+SELECT singers.fullname, birthplaces.place_name 
+    FROM singers
+    JOIN birthplaces
+    ON singers.birthplace_id = birthplaces.id
+    WHERE birthplaces.place_name = "England";
+    
+-- List the number of awards each singer has won with the most-winning person listed first
+SELECT singers.fullname, awards.awards_won
+    FROM singers
+    JOIN awards
+    ON singers.id = awards.singer_id
+    ORDER BY awards.awards_won desc;
+    
+-- List the number of awards each singer has won with the most-winning person listed first including their birthplace and the singers who haven't won any
+SELECT singers.fullname, birthplaces.place_name, awards.awards_won
+    FROM singers
+    JOIN birthplaces
+    ON singers.birthplace_id = birthplaces.id
+    LEFT OUTER JOIN awards
+    ON singers.id = awards.singer_id
+    ORDER BY awards.awards_won desc;
+    
+-- Show list of singers who have dated each other before
+SELECT a.fullname, b.fullname
+    FROM exes
+    JOIN singers a
+    ON exes.ex_1 = a.id
+    JOIN singers b
+    ON exes.ex_2 = b.id;
