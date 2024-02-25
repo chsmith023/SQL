@@ -74,5 +74,30 @@ GROUP BY artist_name
 HAVING total > 1
 ORDER BY total desc, artist_name;
 
+# How many artists have more than 1 songs in the Top 50?
+WITH more_than_one_CTE AS (
+    SELECT 
+    s.artist_name,
+    COUNT(s.id) AS total
+    FROM Spotifydata s
+    GROUP BY s.artist_name
+    HAVING total > 1
+)
+SELECT COUNT(artist_name) AS more_than_one FROM more_than_one_CTE;
 
+# Calculate the average popularity for the artists in the Spotify data table. Then, for every artist with an average 
+# popularity of 90 or above, show their name, their average popularity, and label them as a “Top Star”.
+WITH avg_popularity_CTE AS (
+    SELECT 
+    s.artist_name,
+    AVG(s.popularity) AS avg_pop
+    FROM Spotifydata s
+    GROUP BY s.artist_name
+)
+SELECT
+    artist_name,
+    avg_pop,
+    'Top Star' AS tag
+FROM avg_popularity_CTE
+WHERE avg_pop >= 90;
 
